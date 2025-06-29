@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cstring>
+#include <cmath>
 
 const double pi = 3.14159265358979323846264338327950288419716939937510;
 
@@ -68,8 +69,8 @@ struct matrix : public array<array<T, height>, width> {
         });
     }
 
-    template<int other_width, int other_height, Number T>
-    matrix<other_width, height, T> operator*(const matrix<other_width, other_height, T>& other) const {
+    template<int other_width, int other_height, Number other_T>
+    matrix<other_width, height, T> operator*(const matrix<other_width, other_height, other_T>& other) const {
         return matrix<other_width, height, T>([&](int x, int y) {
             float ret = 0;
             for (int i = 0; i < width; ++i) {

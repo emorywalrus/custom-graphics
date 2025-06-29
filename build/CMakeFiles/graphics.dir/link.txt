@@ -1,0 +1,1 @@
+/usr/bin/g++ -g CMakeFiles/graphics.dir/main.cpp.o -o graphics 

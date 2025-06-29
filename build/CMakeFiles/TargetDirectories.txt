@@ -1,3 +1,3 @@
-C:/Users/emory/custom-graphics/build/CMakeFiles/graphics.dir
-C:/Users/emory/custom-graphics/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/emory/custom-graphics/build/CMakeFiles/ZERO_CHECK.dir
+/home/ubuntu/custom-graphics/build/CMakeFiles/graphics.dir
+/home/ubuntu/custom-graphics/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/custom-graphics/build/CMakeFiles/rebuild_cache.dir

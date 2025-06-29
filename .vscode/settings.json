@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "array": "cpp",
-        "functional": "cpp",
-        "xiosbase": "cpp",
-        "cmath": "cpp"
-    }
-}
