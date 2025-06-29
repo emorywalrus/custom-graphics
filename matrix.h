@@ -13,31 +13,32 @@ using namespace std;
 template<typename T>
 concept Number = integral<T> || floating_point<T>;
 
-template <int width = 4, int height = 4, typename T = float>
-class matrix : array<array<T, height>, width> {
-    public:
+template <int width, int height, Number T>
+struct matrix : public array<array<T, height>, width> {
     matrix() : array<array<T, height>, width>() {}
 
-    matrix(function<T()> f) : array<array<T, height>, width>() {
-        loop([&](int x, int y) {
-            (*this)[x][y] = f();
-        });
-    }
-
-    matrix(const matrix& other) : array<array<T, height>, width>() {
+    matrix(const matrix& other) : matrix() {
         loop([&](int x, int y) {
             (*this)[x][y] = other[x][y];
         });
     }
 
-    matrix(function<T(int x, int y)> f) : array<array<T, height>, width>() {
+    matrix(function<T()> f) : matrix() {
+        loop([&](int x, int y) {
+            (*this)[x][y] = f();
+        });
+    }
+
+    matrix(T(*f)()) : matrix(function<T()>(f)) {}
+
+    matrix(function<T(int x, int y)> f) : matrix() {
         loop([&](int x, int y) {
             (*this)[x][y] = f(x, y);
         });
     }
 
-    matrix<width, height, T> copy() {
-        return matrix<width, height, T>(*this);
+    matrix copy() {
+        return matrix(*this);
     }
 
     void loop(function<void(int x, int y)> f) const {
@@ -49,21 +50,25 @@ class matrix : array<array<T, height>, width> {
     }
 
     void loop(function<void()> f) const {
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < width; ++x) {
-                f();
-            }
-        }
+        loop([&](int x, int y) {
+            f();
+        });
     }
 
-    matrix<width, height, T> operator+(const matrix& other) const {
+    void loop(function<void(T)> f) const {
+        loop([&](int x, int y) {
+            f((*this)[x][y]);
+        });
+    }
+
+    matrix operator+(const matrix& other) const {
         return matrix([&](int x, int y) {
             return (*this)[x][y] + other[x][y];
         });
     }
 
-    template<int other_width, int other_height, typename T>
-    matrix<other_width, height, T> operator*(const matrix<other_width, other_height, T>& other) const {
+    template<int other_width, int other_height, Number T>
+    matrix operator*(const matrix<other_width, other_height, T>& other) const {
         return matrix<other_width, height, T>([&](int x, int y) {
             float ret = 0;
             for (int i = 0; i < width; ++i) {
@@ -74,8 +79,8 @@ class matrix : array<array<T, height>, width> {
     }
 
     template<Number N>
-    matrix<width, height, T> operator*(const N& n) const {
-        return matrix<width, height, T>([&](int x, int y) {
+    matrix operator*(const N& n) const {
+        return matrix([&](int x, int y) {
             return (*this)[x][y] * n;
         });
     }
@@ -100,3 +105,31 @@ class matrix : array<array<T, height>, width> {
         cout << (string)(*this) << endl;
     }
 };
+
+template<int length, Number T = float>
+struct vec : public matrix<1, length, T> {
+    const int length_ = length;
+    T dot(const vec& other) {
+        static_assert(length_ == other.length_);
+        T sum = 0;
+        return other.loop([&](T n) {
+            sum += n;
+        });
+        return sum;
+    }
+};
+
+template <Number T = float>
+struct vec3 : public vec<3, T> {
+    vec3(function<void(int i)> f) : matrix<1, 3, T>([](int x, int y) { f(y); }) {}
+    vec3 cross(const vec3& other) const {
+
+    }
+};
+
+// defaults
+template<int width = 4, int height = 4, Number T = float>
+matrix() -> matrix<width, height, T>;
+
+template<int width = 4, int height = 4, Number T = float, typename F>
+matrix(F) -> matrix<width, height, T>;
