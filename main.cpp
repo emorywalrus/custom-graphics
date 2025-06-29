@@ -7,11 +7,9 @@ void clear() {
 
 int main(int argc, char** argv) {
     clear();
-    matrix t1([&](int x, int y) -> float { return x; });
-    matrix t2([&](int x, int y) -> float { return y; });
+    vec t1(0, 0, 1);
     t1.print();
+    vec t2 = yRotationMatrix(pi/2) * t1;
     t2.print();
-    matrix t3 = t2 * t1;
-    t3.print();
     return 0;
 }
